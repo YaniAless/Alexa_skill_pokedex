@@ -30,34 +30,6 @@ const getPersistenceAdapter = (tableName) => {
   return new DynamoDbPersistenceAdapter({ tableName, createTable: true });
 };
 
-const createReminder = (
-  requestMoment,
-  scheduledMoment,
-  timezone,
-  locale,
-  message
-) => ({
-  requestTime: requestMoment.format("YYYY-MM-DDTHH:mm:00.000"),
-  trigger: {
-    type: "SCHEDULED_ABSOLUTE",
-    scheduledTime: scheduledMoment.format("YYYY-MM-DDTHH:mm:00.000"),
-    timeZoneId: timezone,
-  },
-  alertInfo: {
-    spokenInfo: {
-      content: [
-        {
-          locale,
-          text: message,
-        },
-      ],
-    },
-  },
-  pushNotification: {
-    status: "ENABLED",
-  },
-});
-
 const callDirectiveService = (handlerInput, msg) => {
   const { requestEnvelope, serviceClientFactory } = handlerInput;
   const directiveServiceClient = serviceClientFactory.getDirectiveServiceClient();
@@ -80,6 +52,5 @@ const callDirectiveService = (handlerInput, msg) => {
 module.exports = {
   getS3PreSignedUrl,
   getPersistenceAdapter,
-  createReminder,
   callDirectiveService,
 };

@@ -89,43 +89,6 @@ const SaveAttributesResponseInterceptor = {
   },
 };
 
-const LoadNameRequestInterceptor = {
-  async process(handlerInput) {
-    const {
-      attributesManager,
-      serviceClientFactory,
-      requestEnvelope,
-    } = handlerInput;
-    const sessionAttributes = attributesManager.getSessionAttributes();
-    if (!sessionAttributes["name"]) {
-      // let's try to get the given name via the Customer API
-      // don't forget to enable this permission in your skill configuration (Build tab -> Permissions)
-      // or you'll get a SessionEndRequest with an ERROR of type INVALID_RESPONSE
-      // Per our policies you can't make personal data persistent so we limt "name" to session attributes
-      // Skills cannot collect personal identifiable information (PII)
-      try {
-        const { permissions } = requestEnvelope.context.System.user;
-        if (!(permissions && permissions.consentToken))
-          throw { statusCode: 401, message: "No permission available" }; // there are zero permission, no point in initializing API
-        const upsServiceClient = serviceClientFactory.getUpsServiceClient();
-        const profileName = await upsServiceClient.getProfileGivenName();
-        if (profileName) {
-          // the user might not have set the name
-          sessionAttributes["name"] = profileName;
-        }
-      } catch (error) {
-        console.log("LoadNameRequestInterceptor" + JSON.stringify(error));
-        if (error.statusCode === 401 || error.statusCode === 403) {
-          // the user needs to enable the permissions for given name, let's append a permissions card to the response
-          handlerInput.responseBuilder.withAskForPermissionsConsentCard(
-            constants.GIVEN_NAME_PERMISSION
-          );
-        }
-      }
-    }
-  },
-};
-
 const LoadTimezoneRequestInterceptor = {
   async process(handlerInput) {
     const {
@@ -160,6 +123,5 @@ module.exports = {
   LocalisationRequestInterceptor,
   LoadAttributesRequestInterceptor,
   SaveAttributesResponseInterceptor,
-  LoadNameRequestInterceptor,
   LoadTimezoneRequestInterceptor,
 };

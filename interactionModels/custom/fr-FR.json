@@ -29,12 +29,17 @@
             {
               "name": "day",
               "type": "AMAZON.NUMBER",
-              "samples": ["le {day}", "{day}"]
+              "samples": [
+                "le {day}",
+                "{day}"
+              ]
             },
             {
               "name": "month",
               "type": "MonthSlotType",
-              "samples": ["{month}"]
+              "samples": [
+                "{month}"
+              ]
             },
             {
               "name": "year",
@@ -78,7 +83,9 @@
             {
               "name": "message",
               "type": "AMAZON.SearchQuery",
-              "samples": ["{message}"]
+              "samples": [
+                "{message}"
+              ]
             }
           ],
           "samples": [
